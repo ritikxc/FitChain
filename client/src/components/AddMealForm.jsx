@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Check, Loader2, Plus } from 'lucide-react'
 
 const DEFAULT = { name:'', calories:'', protein:'', carbs:'', fats:'' }
 
@@ -37,24 +38,19 @@ export default function AddMealForm({ onAdd }) {
   }
 
   return (
-    <div className="glass-static p-5 relative overflow-hidden" style={{border:'1px solid rgba(0,255,135,0.1)'}}>
-      {/* Header glow line */}
-      <div className="absolute top-0 left-0 right-0 h-px" style={{background:'linear-gradient(90deg,transparent,#00ff87,#00d4ff,transparent)'}}/>
-
+    <div className="rounded-xl border border-surface-border bg-surface-card p-5">
       <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{background:'rgba(0,255,135,0.1)',border:'1px solid rgba(0,255,135,0.2)'}}>
-          <svg className="w-4 h-4" style={{color:'#00ff87'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-          </svg>
+        <div className="w-9 h-9 rounded-xl border border-surface-border/60 bg-surface-default/30 flex items-center justify-center flex-shrink-0">
+          <Plus className="w-4 h-4 text-brand-green" />
         </div>
-        <div>
-          <h3 className="font-bold text-white text-sm">Log Meal</h3>
-          <p className="text-xs" style={{color:'var(--text-muted)'}}>Track your nutrition</p>
+        <div className="min-w-0">
+          <h3 className="font-display font-bold text-sm text-white">Log meal</h3>
+          <p className="text-xs text-text-muted truncate">Track your nutrition</p>
         </div>
         {success && (
-          <span className="ml-auto badge-green text-xs animate-scale-in">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
-            Added!
+          <span className="ml-auto badge-green text-xs">
+            <Check className="w-3 h-3" />
+            Added
           </span>
         )}
       </div>
@@ -67,7 +63,7 @@ export default function AddMealForm({ onAdd }) {
           {errors.name && <p className="text-xs mt-1" style={{color:'#ff5050'}}>{errors.name}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label-neon">Calories *</label>
             <input name="calories" type="number" value={form.calories} onChange={handleChange} placeholder="450" min="0"
@@ -80,7 +76,7 @@ export default function AddMealForm({ onAdd }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="label-neon">Carbs (g)</label>
             <input name="carbs" type="number" value={form.carbs} onChange={handleChange} placeholder="55" min="0" className="input-neon"/>
@@ -91,11 +87,11 @@ export default function AddMealForm({ onAdd }) {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="btn-gradient w-full mt-1" style={{borderRadius:'12px'}}>
+        <button type="submit" disabled={loading} className="btn-gradient w-full mt-1 rounded-xl min-h-[44px]">
           {loading ? (
-            <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Adding...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> Adding...</>
           ) : (
-            <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4"/></svg>Add Meal</>
+            <><Plus className="w-4 h-4" /> Add meal</>
           )}
         </button>
       </form>
