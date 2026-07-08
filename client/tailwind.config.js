@@ -4,13 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        neon: { green: '#00ff87', blue: '#00d4ff', purple: '#bf5fff' },
-        void: '#020408',
-        deep: '#050a10',
+        brand: {
+          green: '#A3FF12',
+          orange: '#FF7A00',
+        },
+        surface: {
+          default: '#0B0B0B',
+          card: '#161616',
+          border: '#2A2A2A',
+          hover: '#1F1F1F',
+        },
       },
       fontFamily: {
-        display: ['Outfit', 'sans-serif'],
-        body: ['Outfit', 'sans-serif'],
+        display: ['Space Grotesk', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
     },
