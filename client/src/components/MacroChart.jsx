@@ -27,7 +27,9 @@ export default function MacroChart({ macros }) {
   ]
 
   return (
-    <div className="bg-surface-card border border-surface-border p-5 rounded-xl flex flex-col h-full min-h-[320px]">
+    // ResponsiveContainer requires an explicit, non-auto height somewhere up the tree.
+    // Using a fixed responsive height here prevents ResizeObserver-driven growth loops.
+    <div className="bg-surface-card border border-surface-border p-5 rounded-xl flex flex-col h-[320px] sm:h-[340px]">
       <div className="flex items-center justify-between mb-5 pb-4 border-b border-surface-border/50">
         <div>
           <h3 className="font-display font-medium text-white text-base">Nutrition Distribution</h3>
@@ -36,7 +38,7 @@ export default function MacroChart({ macros }) {
         <Activity className="w-5 h-5 text-brand-green" />
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center gap-8 flex-1">
+      <div className="flex flex-col sm:flex-row items-center gap-8 flex-1 min-h-0">
         {/* Pie */}
         <div className="h-32 w-32 flex-shrink-0 relative">
           <ResponsiveContainer width="100%" height="100%">
