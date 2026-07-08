@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function WeeklyChart({ data }) {
   return (
-    <div className="bg-surface-card border border-surface-border p-5 rounded-xl flex flex-col h-full min-h-[360px]">
+    <div className="bg-surface-card border border-surface-border p-5 rounded-xl flex flex-col h-[360px] sm:h-[380px]">
       <div className="flex items-center justify-between mb-5 pb-4 border-b border-surface-border/50">
         <div>
           <h3 className="font-display font-medium text-white text-base">Weekly Trajectory</h3>
@@ -35,7 +35,7 @@ export default function WeeklyChart({ data }) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-[240px]">
+      <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{top:5,right:0,bottom:0,left:0}}>
             <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" vertical={false}/>
