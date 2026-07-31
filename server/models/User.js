@@ -101,6 +101,10 @@ const userSchema = new mongoose.Schema(
         type: Boolean,
         default: false,
       },
+      profileCompleted: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
   {

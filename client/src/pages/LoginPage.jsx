@@ -34,7 +34,8 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const currentUser = await login({ email: form.email.trim(), password: form.password })
-      navigate(currentUser?.profile?.setupComplete ? '/dashboard' : '/onboarding')
+      const completed = currentUser?.profile?.profileCompleted ?? currentUser?.profile?.setupComplete ?? false
+      navigate(completed ? '/dashboard' : '/onboarding')
     } catch (err) {
       setApiError(err.message)
     } finally {

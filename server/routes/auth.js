@@ -121,6 +121,10 @@ router.patch(
     body('goal').optional().isIn(['hypertrophy', 'strength', 'endurance']).withMessage('Invalid goal'),
     body('location').optional().isIn(['home', 'gym']).withMessage('Invalid location'),
     body('calorieGoal').optional().isInt({ min: 500, max: 10000 }).withMessage('Calorie goal must be between 500–10000'),
+    body('profileCompleted').optional().isBoolean().withMessage('Profile completion must be true or false'),
+    body('setupComplete').optional().isBoolean().withMessage('Setup completion must be true or false'),
+    body('fitnessGoal').optional().isIn(['weight_loss', 'maintain', 'weight_gain', 'muscle_gain']).withMessage('Invalid fitness goal'),
+    body('activityLevel').optional().isIn(['sedentary', 'lightly_active', 'moderately_active', 'very_active']).withMessage('Invalid activity level'),
   ],
   async (req, res, next) => {
     try {
@@ -129,7 +133,7 @@ router.patch(
         return res.status(400).json({ success: false, message: errors.array()[0].msg })
       }
 
-      const { goal, location, calorieGoal, height, weight, age, gender, fitnessGoal, proteinGoal, carbsGoal, fatGoal, waterGoal, activityLevel, setupComplete } = req.body
+      const { goal, location, calorieGoal, height, weight, age, gender, fitnessGoal, proteinGoal, carbsGoal, fatGoal, waterGoal, activityLevel, setupComplete, profileCompleted } = req.body
       const update = {}
 
       if (goal !== undefined) update['profile.goal'] = goal
@@ -145,7 +149,12 @@ router.patch(
       if (fatGoal !== undefined) update['profile.fatGoal'] = fatGoal
       if (waterGoal !== undefined) update['profile.waterGoal'] = waterGoal
       if (activityLevel !== undefined) update['profile.activityLevel'] = activityLevel
-      if (setupComplete !== undefined) update['profile.setupComplete'] = setupComplete
+
+      const completedValue = profileCompleted ?? setupComplete
+      if (completedValue !== undefined) {
+        update['profile.profileCompleted'] = completedValue
+        update['profile.setupComplete'] = completedValue
+      }
 
       const user = await User.findByIdAndUpdate(
         req.user._id,
