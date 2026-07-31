@@ -129,11 +129,23 @@ router.patch(
         return res.status(400).json({ success: false, message: errors.array()[0].msg })
       }
 
-      const { goal, location, calorieGoal } = req.body
+      const { goal, location, calorieGoal, height, weight, age, gender, fitnessGoal, proteinGoal, carbsGoal, fatGoal, waterGoal, activityLevel, setupComplete } = req.body
       const update = {}
+
       if (goal !== undefined) update['profile.goal'] = goal
       if (location !== undefined) update['profile.location'] = location
       if (calorieGoal !== undefined) update['profile.calorieGoal'] = calorieGoal
+      if (height !== undefined) update['profile.height'] = height
+      if (weight !== undefined) update['profile.weight'] = weight
+      if (age !== undefined) update['profile.age'] = age
+      if (gender !== undefined) update['profile.gender'] = gender
+      if (fitnessGoal !== undefined) update['profile.fitnessGoal'] = fitnessGoal
+      if (proteinGoal !== undefined) update['profile.proteinGoal'] = proteinGoal
+      if (carbsGoal !== undefined) update['profile.carbsGoal'] = carbsGoal
+      if (fatGoal !== undefined) update['profile.fatGoal'] = fatGoal
+      if (waterGoal !== undefined) update['profile.waterGoal'] = waterGoal
+      if (activityLevel !== undefined) update['profile.activityLevel'] = activityLevel
+      if (setupComplete !== undefined) update['profile.setupComplete'] = setupComplete
 
       const user = await User.findByIdAndUpdate(
         req.user._id,

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Activity, BarChart3, Dumbbell, LayoutDashboard, LogOut, Settings2, Sparkles, TrendingUp, Utensils, UserCircle2 } from 'lucide-react'
+import { Activity, BarChart3, Dumbbell, LayoutDashboard, LogOut, Menu, Settings2, Sparkles, TrendingUp, Utensils, UserCircle2, X } from 'lucide-react'
 import { logout, getStoredUser } from '../services/api'
 
 const NAV = [
@@ -15,8 +16,13 @@ const NAV = [
 export default function Sidebar({ user }) {
   const location = useLocation()
   const navigate = useNavigate()
+  const [mobileOpen, setMobileOpen] = useState(false)
   const displayUser = user || getStoredUser()
   const initials = displayUser?.name?.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || 'U'
+
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
 
   function handleLogout() {
     logout()
@@ -24,8 +30,15 @@ export default function Sidebar({ user }) {
   }
 
   return (
-    <aside className="hidden md:flex flex-col w-64 fixed left-0 top-0 bottom-0 z-30 bg-[#fcfcfc] border-r border-[#e5e5e5]">
-      <div className="px-5 py-6 border-b border-[#e5e5e5]">
+    <>
+      <button onClick={() => setMobileOpen(true)} className="fixed left-4 top-4 z-40 flex h-11 w-11 items-center justify-center rounded-2xl border border-[#e5e5e5] bg-white text-[#111111] shadow-sm md:hidden">
+        <Menu className="h-5 w-5" />
+      </button>
+
+      {mobileOpen && <button onClick={() => setMobileOpen(false)} className="fixed inset-0 z-30 bg-black/20 md:hidden" aria-label="Close menu" />}
+
+      <aside className={`fixed left-0 top-0 bottom-0 z-40 flex w-64 flex-col border-r border-[#e5e5e5] bg-[#fcfcfc] transition-transform duration-200 md:translate-x-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      <div className="flex items-center justify-between px-5 py-6 border-b border-[#e5e5e5]">
         <Link to="/dashboard" className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center">
             <Sparkles className="h-5 w-5" />
@@ -35,6 +48,9 @@ export default function Sidebar({ user }) {
             <p className="text-sm text-[#666666]">Fitness OS</p>
           </div>
         </Link>
+        <button onClick={() => setMobileOpen(false)} className="rounded-xl p-2 text-[#666666] hover:bg-[#f7f7f7] md:hidden">
+          <X className="h-4 w-4" />
+        </button>
       </div>
 
       <nav className="flex-1 px-3 py-5 space-y-1">
@@ -78,5 +94,6 @@ export default function Sidebar({ user }) {
         </div>
       </div>
     </aside>
+    </>
   )
 }

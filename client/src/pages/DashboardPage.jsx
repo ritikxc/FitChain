@@ -14,7 +14,7 @@ function AnimNumber({ value }) {
 
 export default function DashboardPage() {
   const navigate = useNavigate()
-  const [user, setUser] = useState(getStoredUser)
+  const [user, setUser] = useState(() => getStoredUser())
   const [meals, setMeals] = useState([])
   const [weeklyData, setWeeklyData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -55,15 +55,20 @@ export default function DashboardPage() {
 
   const macros = sumMacros(meals)
   const calorieGoal = user?.profile?.calorieGoal || 2200
+  const proteinGoal = user?.profile?.proteinGoal || 160
+  const carbsGoal = user?.profile?.carbsGoal || 220
+  const fatGoal = user?.profile?.fatGoal || 70
+  const waterGoal = user?.profile?.waterGoal || 3
   const remaining = Math.max(calorieGoal - macros.calories, 0)
   const pct = Math.min((macros.calories / calorieGoal) * 100, 100)
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const metricCards = [
     { label: 'Calories', value: macros.calories, target: calorieGoal, unit: 'kcal', status: macros.calories < calorieGoal ? 'On track' : 'Above goal', tone: macros.calories < calorieGoal ? '#2563eb' : '#dc2626' },
-    { label: 'Protein', value: macros.protein, target: 160, unit: 'g', status: macros.protein >= 160 ? 'Goal met' : 'Needs more', tone: macros.protein >= 160 ? '#16a34a' : '#2563eb' },
-    { label: 'Carbs', value: macros.carbs, target: 220, unit: 'g', status: macros.carbs <= 220 ? 'Balanced' : 'High', tone: macros.carbs <= 220 ? '#16a34a' : '#dc2626' },
-    { label: 'Fats', value: macros.fats, target: 70, unit: 'g', status: macros.fats <= 70 ? 'Balanced' : 'High', tone: macros.fats <= 70 ? '#16a34a' : '#dc2626' },
+    { label: 'Protein', value: macros.protein, target: proteinGoal, unit: 'g', status: macros.protein >= proteinGoal ? 'Goal met' : 'Needs more', tone: macros.protein >= proteinGoal ? '#16a34a' : '#2563eb' },
+    { label: 'Carbs', value: macros.carbs, target: carbsGoal, unit: 'g', status: macros.carbs <= carbsGoal ? 'Balanced' : 'High', tone: macros.carbs <= carbsGoal ? '#16a34a' : '#dc2626' },
+    { label: 'Fats', value: macros.fats, target: fatGoal, unit: 'g', status: macros.fats <= fatGoal ? 'Balanced' : 'High', tone: macros.fats <= fatGoal ? '#16a34a' : '#dc2626' },
   ]
+  const hasMeals = meals.length > 0
 
   return (
     <div className="flex min-h-screen bg-[#f7f7f7]">
@@ -164,10 +169,18 @@ export default function DashboardPage() {
               </section>
 
               <section className="grid lg:grid-cols-[0.9fr_1.1fr] gap-5">
-                <AddMealForm onAdd={handleAddMeal} />
+                <div className="space-y-4">
+                  <AddMealForm onAdd={handleAddMeal} />
+                  {!hasMeals && (
+                    <div className="rounded-[24px] border border-dashed border-[#d0d0d0] bg-[#fcfcfc] p-5 text-sm text-[#666666]">
+                      <p className="font-semibold text-[#111111]">No meals logged yet</p>
+                      <p className="mt-2">Start with your first meal to build a real picture of your day.</p>
+                    </div>
+                  )}
+                </div>
                 <div className="space-y-5">
-                  <MacroChart macros={macros} />
-                  <WeeklyChart data={weeklyData} />
+                  {hasMeals ? <MacroChart macros={macros} /> : <div className="rounded-[24px] border border-[#e5e5e5] bg-white p-6 text-sm text-[#666666]">Your macro breakdown will appear here as soon as you log meals.</div>}
+                  {weeklyData.length > 0 ? <WeeklyChart data={weeklyData} /> : <div className="rounded-[24px] border border-[#e5e5e5] bg-white p-6 text-sm text-[#666666]">Your weekly trend will appear after you log a few meals.</div>}
                 </div>
               </section>
             </>

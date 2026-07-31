@@ -33,8 +33,8 @@ export default function LoginPage() {
     }
     setLoading(true)
     try {
-      await login({ email: form.email.trim(), password: form.password })
-      navigate('/dashboard')
+      const currentUser = await login({ email: form.email.trim(), password: form.password })
+      navigate(currentUser?.profile?.setupComplete ? '/dashboard' : '/onboarding')
     } catch (err) {
       setApiError(err.message)
     } finally {

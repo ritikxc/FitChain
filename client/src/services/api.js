@@ -96,10 +96,10 @@ export async function getCurrentUser() {
   }
 }
 
-export async function updateProfile({ goal, location, calorieGoal }) {
+export async function updateProfile(profileData = {}) {
   const data = await request('/api/auth/profile', {
     method: 'PATCH',
-    body: JSON.stringify({ goal, location, calorieGoal }),
+    body: JSON.stringify(profileData),
   })
   setStoredUser(data.user)
   return data.user

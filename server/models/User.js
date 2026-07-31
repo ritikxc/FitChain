@@ -41,6 +41,66 @@ const userSchema = new mongoose.Schema(
         min: 500,
         max: 10000,
       },
+      height: {
+        type: Number,
+        default: 175,
+        min: 50,
+        max: 260,
+      },
+      weight: {
+        type: Number,
+        default: 72,
+        min: 30,
+        max: 300,
+      },
+      age: {
+        type: Number,
+        default: 28,
+        min: 13,
+        max: 120,
+      },
+      gender: {
+        type: String,
+        default: '',
+      },
+      fitnessGoal: {
+        type: String,
+        enum: ['weight_loss', 'maintain', 'weight_gain', 'muscle_gain'],
+        default: 'weight_loss',
+      },
+      proteinGoal: {
+        type: Number,
+        default: 160,
+        min: 0,
+        max: 500,
+      },
+      carbsGoal: {
+        type: Number,
+        default: 220,
+        min: 0,
+        max: 1000,
+      },
+      fatGoal: {
+        type: Number,
+        default: 70,
+        min: 0,
+        max: 400,
+      },
+      waterGoal: {
+        type: Number,
+        default: 3,
+        min: 0,
+        max: 20,
+      },
+      activityLevel: {
+        type: String,
+        enum: ['sedentary', 'lightly_active', 'moderately_active', 'very_active'],
+        default: 'lightly_active',
+      },
+      setupComplete: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
   {

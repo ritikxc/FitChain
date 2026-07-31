@@ -38,7 +38,7 @@ export default function SignupPage() {
     setLoading(true)
     try {
       await signUp({ name: form.name.trim(), email: form.email.trim(), password: form.password })
-      navigate('/dashboard')
+      navigate('/onboarding')
     } catch (err) {
       setApiError(err.message)
     } finally {
