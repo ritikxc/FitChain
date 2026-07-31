@@ -2,72 +2,65 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { Activity } from 'lucide-react'
 
 const MACRO_CONFIG = [
-  { key:'protein', label:'Protein', color:'#A3FF12' },
-  { key:'carbs', label:'Carbs', color:'#FF7A00' },
-  { key:'fats', label:'Fats', color:'#EF4444' },
+  { key: 'protein', label: 'Protein', color: '#111111' },
+  { key: 'carbs', label: 'Carbs', color: '#2563eb' },
+  { key: 'fats', label: 'Fats', color: '#dc2626' },
 ]
 
 const CustomTooltip = ({ active, payload }) => {
-  if(active && payload?.length) return (
-    <div className="rounded-lg p-2 text-xs border border-surface-border bg-surface-default">
-      <p className="font-semibold text-white">{payload[0].name}</p>
-      <p className="text-text-secondary mt-0.5 font-mono">{payload[0].payload.grams}g</p>
-    </div>
-  )
+  if (active && payload?.length) {
+    return (
+      <div className="rounded-2xl border border-[#e5e5e5] bg-white px-3 py-2 text-xs shadow-sm">
+        <p className="font-semibold text-[#111111]">{payload[0].name}</p>
+        <p className="text-[#666666] mt-0.5">{payload[0].payload.grams}g</p>
+      </div>
+    )
+  }
   return null
 }
 
 export default function MacroChart({ macros }) {
   const { protein, carbs, fats } = macros
-
   const pieData = [
-    { name:'Protein', value: protein||1, grams:protein },
-    { name:'Carbs', value: carbs||1, grams:carbs },
-    { name:'Fats', value: fats||1, grams:fats },
+    { name: 'Protein', value: protein || 1, grams: protein },
+    { name: 'Carbs', value: carbs || 1, grams: carbs },
+    { name: 'Fats', value: fats || 1, grams: fats },
   ]
 
   return (
-    // ResponsiveContainer requires an explicit, non-auto height somewhere up the tree.
-    // Using a fixed responsive height here prevents ResizeObserver-driven growth loops.
-    <div className="bg-surface-card border border-surface-border p-5 rounded-xl flex flex-col h-[320px] sm:h-[340px]">
-      <div className="flex items-center justify-between mb-5 pb-4 border-b border-surface-border/50">
+    <div className="rounded-[24px] border border-[#e5e5e5] bg-white p-5 shadow-sm h-[320px] sm:h-[340px]">
+      <div className="flex items-center justify-between mb-5 pb-4 border-b border-[#f0f0f0]">
         <div>
-          <h3 className="font-display font-medium text-white text-base">Nutrition Distribution</h3>
-          <p className="text-xs mt-1 text-text-muted uppercase tracking-wider font-semibold">Macronutrient split</p>
+          <h3 className="font-semibold text-base">Macro split</h3>
+          <p className="text-xs mt-1 text-[#666666] uppercase tracking-[0.16em]">Daily balance</p>
         </div>
-        <Activity className="w-5 h-5 text-brand-green" />
+        <Activity className="h-5 w-5 text-[#111111]" />
       </div>
 
       <div className="flex flex-col sm:flex-row items-center gap-8 flex-1 min-h-0">
-        {/* Pie */}
-        <div className="h-32 w-32 flex-shrink-0 relative">
+        <div className="h-32 w-32 flex-shrink-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={42} outerRadius={60}
-                paddingAngle={4} dataKey="value" strokeWidth={0}>
-                {pieData.map((_,i) => (
-                  <Cell key={i} fill={MACRO_CONFIG[i].color} />
-                ))}
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={42} outerRadius={60} paddingAngle={4} dataKey="value" strokeWidth={0}>
+                {pieData.map((_, i) => <Cell key={i} fill={MACRO_CONFIG[i].color} />)}
               </Pie>
-              <Tooltip content={<CustomTooltip/>}/>
+              <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Macro bars */}
         <div className="flex-1 w-full space-y-4">
-          {MACRO_CONFIG.map(m => {
+          {MACRO_CONFIG.map((m) => {
             const total = protein + carbs + fats || 1
             const pct = Math.round((macros[m.key] / total) * 100)
             return (
               <div key={m.key}>
-                <div className="flex justify-between text-xs mb-1.5 font-mono">
-                  <span className="text-text-secondary">{m.label}</span>
-                  <span className="text-white font-medium">{macros[m.key]}g</span>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#666666]">{m.label}</span>
+                  <span className="text-[#111111] font-semibold">{macros[m.key]}g</span>
                 </div>
-                <div className="w-full h-1.5 bg-surface-default rounded-sm overflow-hidden border border-surface-border/50">
-                  <div className="h-full rounded-sm transition-all duration-300 ease-out"
-                    style={{width:`${pct}%`, background:m.color}}/>
+                <div className="w-full h-2 bg-[#f7f7f7] rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${pct}%`, background: m.color }} />
                 </div>
               </div>
             )

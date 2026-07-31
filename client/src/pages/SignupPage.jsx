@@ -1,124 +1,137 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ArrowRight, Mail, Sparkles, UserCircle2 } from 'lucide-react'
 import { signUp } from '../services/api'
 
 export default function SignupPage() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name:'', email:'', password:'', confirm:'' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [apiError, setApiError] = useState('')
 
   function handleChange(e) {
-    const {name,value} = e.target
-    setForm(p=>({...p,[name]:value}))
-    if(errors[name]) setErrors(p=>({...p,[name]:''}))
+    const { name, value } = e.target
+    setForm((p) => ({ ...p, [name]: value }))
+    if (errors[name]) setErrors((p) => ({ ...p, [name]: '' }))
     setApiError('')
   }
 
   function validate() {
     const errs = {}
-    if(!form.name.trim()) errs.name = 'Name is required'
-    if(!form.email.trim()) errs.email = 'Email is required'
-    else if(!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Invalid email format'
-    if(!form.password) errs.password = 'Password is required'
-    else if(form.password.length < 6) errs.password = 'Minimum 6 characters'
-    if(form.password !== form.confirm) errs.confirm = 'Passwords do not match'
+    if (!form.name.trim()) errs.name = 'Name is required'
+    if (!form.email.trim()) errs.email = 'Email is required'
+    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Invalid email format'
+    if (!form.password) errs.password = 'Password is required'
+    else if (form.password.length < 6) errs.password = 'Minimum 6 characters'
+    if (form.password !== form.confirm) errs.confirm = 'Passwords do not match'
     return errs
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
-    if(Object.keys(errs).length){ setErrors(errs); return }
+    if (Object.keys(errs).length) {
+      setErrors(errs)
+      return
+    }
     setLoading(true)
     try {
-      await signUp({ name:form.name.trim(), email:form.email.trim(), password:form.password })
+      await signUp({ name: form.name.trim(), email: form.email.trim(), password: form.password })
       navigate('/dashboard')
-    } catch(err) {
+    } catch (err) {
       setApiError(err.message)
-    } finally { setLoading(false) }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 relative" style={{background:'var(--bg-void)'}}>
-      <div className="bg-mesh"/>
-      <div className="bg-grid-pattern absolute inset-0 pointer-events-none"/>
-      <div className="orb orb-green" style={{width:'400px',height:'400px',top:'-100px',right:'-50px'}}/>
-      <div className="orb orb-purple" style={{width:'300px',height:'300px',bottom:'-50px',left:'-50px'}}/>
-
-      <div className="relative w-full max-w-md animate-fade-up">
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-              style={{background:'linear-gradient(135deg,#00ff87,#00d4ff)',boxShadow:'0 0 20px rgba(0,255,135,0.4)'}}>
-              <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8-6a6 6 0 100 12A6 6 0 0010 4z" clipRule="evenodd"/>
-              </svg>
-            </div>
-            <span className="font-black text-xl"><span className="text-white">Fit</span><span className="text-gradient-green">Chain</span></span>
-          </Link>
-          <h1 className="font-black text-2xl text-white mt-6 mb-1" style={{letterSpacing:'-0.02em'}}>Create your account</h1>
-          <p className="text-sm" style={{color:'var(--text-secondary)'}}>Start building your chain today</p>
-        </div>
-
-        <div className="glass-static rounded-2xl p-6 relative" style={{border:'1px solid rgba(255,255,255,0.09)',boxShadow:'0 20px 60px rgba(0,0,0,0.5)'}}>
-          <div className="absolute top-0 left-0 right-0 h-px" style={{background:'linear-gradient(90deg,transparent,rgba(0,255,135,0.5),transparent)'}}/>
+    <div className="min-h-screen app-shell flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-6xl grid lg:grid-cols-[1fr_1.1fr] rounded-[32px] overflow-hidden panel">
+        <div className="p-6 sm:p-10 lg:p-12 bg-white flex flex-col justify-center">
+          <div className="mb-8">
+            <p className="section-title mb-3">Create account</p>
+            <h2 className="text-3xl font-semibold">Join FitChain</h2>
+            <p className="text-sm text-[#666666] mt-2">Start a more deliberate fitness routine today.</p>
+          </div>
 
           {apiError && (
-            <div className="flex items-center gap-2 rounded-xl px-4 py-3 mb-4 text-sm animate-scale-in"
-              style={{background:'rgba(255,80,80,0.08)',border:'1px solid rgba(255,80,80,0.2)',color:'#ff8080'}}>
-              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
+            <div className="rounded-2xl border border-[#f1c4c4] bg-[#fff7f7] p-3 text-sm text-[#b91c1c] mb-4">
               {apiError}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="label-neon">Full Name</label>
-              <input name="name" value={form.name} onChange={handleChange} placeholder="Alex Johnson"
-                className={`input-neon ${errors.name?'error':''}`}/>
-              {errors.name && <p className="text-xs mt-1" style={{color:'#ff5050'}}>{errors.name}</p>}
+              <label className="text-sm font-semibold block mb-2">Full name</label>
+              <div className="relative">
+                <UserCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999]" />
+                <input name="name" value={form.name} onChange={handleChange} placeholder="Alex Morgan" className="input-field pl-10" />
+              </div>
+              {errors.name && <p className="text-sm text-[#b91c1c] mt-1">{errors.name}</p>}
             </div>
             <div>
-              <label className="label-neon">Email Address</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="alex@example.com"
-                className={`input-neon ${errors.email?'error':''}`}/>
-              {errors.email && <p className="text-xs mt-1" style={{color:'#ff5050'}}>{errors.email}</p>}
+              <label className="text-sm font-semibold block mb-2">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#999999]" />
+                <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="alex@email.com" className="input-field pl-10" />
+              </div>
+              {errors.email && <p className="text-sm text-[#b91c1c] mt-1">{errors.email}</p>}
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-2 gap-4">
               <div>
-                <label className="label-neon">Password</label>
-                <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Min 6 chars"
-                  className={`input-neon ${errors.password?'error':''}`}/>
-                {errors.password && <p className="text-xs mt-1" style={{color:'#ff5050'}}>{errors.password}</p>}
+                <label className="text-sm font-semibold block mb-2">Password</label>
+                <input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Min 6 chars" className="input-field" />
+                {errors.password && <p className="text-sm text-[#b91c1c] mt-1">{errors.password}</p>}
               </div>
               <div>
-                <label className="label-neon">Confirm</label>
-                <input name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="Repeat"
-                  className={`input-neon ${errors.confirm?'error':''}`}/>
-                {errors.confirm && <p className="text-xs mt-1" style={{color:'#ff5050'}}>{errors.confirm}</p>}
+                <label className="text-sm font-semibold block mb-2">Confirm</label>
+                <input name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="Repeat" className="input-field" />
+                {errors.confirm && <p className="text-sm text-[#b91c1c] mt-1">{errors.confirm}</p>}
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-gradient w-full py-3.5 mt-1" style={{borderRadius:'12px',fontSize:'0.95rem'}}>
-              {loading ? (
-                <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Creating account...</>
-              ) : 'Create Account →'}
+            <button type="submit" disabled={loading} className="button-primary w-full py-3.2">
+              {loading ? 'Creating account…' : 'Create account'}
+              {!loading && <ArrowRight className="h-4 w-4" />}
             </button>
           </form>
 
-          <p className="text-xs text-center mt-4" style={{color:'var(--text-muted)'}}>
-            By signing up you agree to our <a href="#" style={{color:'#00ff87'}}>Terms</a> &amp; <a href="#" style={{color:'#00ff87'}}>Privacy Policy</a>
-          </p>
+          <div className="mt-6 text-center text-sm text-[#666666]">
+            Already have an account? <Link to="/login" className="font-semibold text-[#111111]">Sign in</Link>
+          </div>
         </div>
 
-        <p className="text-center text-sm mt-5" style={{color:'var(--text-muted)'}}>
-          Already have an account?{' '}
-          <Link to="/login" className="font-semibold" style={{color:'#00ff87'}}>Sign in</Link>
-        </p>
+        <div className="hidden lg:flex flex-col justify-between bg-[#f5f5f5] p-10">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-[#111111] text-white flex items-center justify-center"><Sparkles className="h-5 w-5" /></div>
+            <div>
+              <p className="text-sm font-semibold">Minimal by design</p>
+              <p className="text-sm text-[#666666]">High clarity, low noise.</p>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <div className="rounded-3xl border border-[#e5e5e5] bg-white p-6">
+              <p className="section-title mb-3">Why it feels different</p>
+              <ul className="space-y-3 text-sm text-[#666666]">
+                <li>• Clear nutrition and activity goals</li>
+                <li>• Calm, premium visual language</li>
+                <li>• Consistent updates across every screen</li>
+              </ul>
+            </div>
+            <div className="rounded-3xl border border-[#e5e5e5] bg-white p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold">Weekly streak</p>
+                  <p className="text-sm text-[#666666]">5 days in a row</p>
+                </div>
+                <span className="pill">+12%</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-[#666666]">Focus on the work. Let the app stay in the background.</p>
+        </div>
       </div>
     </div>
   )

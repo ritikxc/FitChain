@@ -5,6 +5,10 @@ import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
 import WorkoutsPage from './pages/WorkoutsPage'
 import ProgressPage from './pages/ProgressPage'
+import NutritionPage from './pages/NutritionPage'
+import AnalyticsPage from './pages/AnalyticsPage'
+import ProfilePage from './pages/ProfilePage'
+import SettingsPage from './pages/SettingsPage'
 import ProtectedRoute from './routes/ProtectedRoute'
 
 export default function App() {
@@ -38,6 +42,38 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ProgressPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/nutrition"
+          element={
+            <ProtectedRoute>
+              <NutritionPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <SettingsPage />
             </ProtectedRoute>
           }
         />
