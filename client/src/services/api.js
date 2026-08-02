@@ -2,7 +2,8 @@
 // api.js — All API calls to the FitChain backend
 // ============================================================
 
-const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://fitchain.onrender.com')
+const API_BASE = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://fitchain.onrender.com')).trim().replace(/\/$/, '')
+const BASE_URL = API_BASE.endsWith('/api') ? API_BASE.replace(/\/api$/, '') : API_BASE
 
 // ---------- Token Management ----------
 
@@ -45,7 +46,8 @@ async function request(endpoint, options = {}) {
     ...options,
   }
 
-  const res = await fetch(`${BASE_URL}${endpoint}`, config)
+  const normalizedEndpoint = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`
+  const res = await fetch(`${BASE_URL}${normalizedEndpoint}`, config)
 
   const data = await res.json().catch(() => ({}))
 
