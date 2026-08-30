@@ -153,48 +153,126 @@ export async function getWeeklyData() {
 
 export async function getTodayWorkout(date) {
   const queryDate = date || getTodayString()
-  const data = await request(`/api/workouts/today?date=${queryDate}`)
-  return data.workout
+  try {
+    const data = await request(`/api/workouts/today?date=${queryDate}`)
+    return data.workout
+  } catch {
+    try {
+      const local = JSON.parse(localStorage.getItem(`fitchain_workout_${queryDate}`))
+      return local || null
+    } catch {
+      return null
+    }
+  }
 }
 
 export async function getWorkoutHistory() {
-  const data = await request('/api/workouts/history')
-  return data.workouts || []
+  try {
+    const data = await request('/api/workouts/history')
+    return data.workouts || []
+  } catch {
+    try {
+      return JSON.parse(localStorage.getItem('fitchain_workout_history')) || []
+    } catch {
+      return []
+    }
+  }
 }
 
 export async function getMonthlyWorkouts() {
-  const data = await request('/api/workouts/monthly')
-  return data
+  try {
+    const data = await request('/api/workouts/monthly')
+    return data
+  } catch {
+    try {
+      const history = JSON.parse(localStorage.getItem('fitchain_workout_history') || '[]')
+      return { workouts: history, monthlyVolume: 0, totalWorkouts: history.length }
+    } catch {
+      return { workouts: [], monthlyVolume: 0, totalWorkouts: 0 }
+    }
+  }
 }
 
 export async function logWorkout(workoutData) {
-  const data = await request('/api/workouts', {
-    method: 'POST',
-    body: JSON.stringify(workoutData),
-  })
-  return data.workout
+  const queryDate = workoutData.date || getTodayString()
+  const setsTotal = workoutData.exercises?.reduce((sum, ex) => {
+    const sets = Number(ex.sets) || 0
+    const reps = Number(String(ex.reps).match(/\d+/)?.[0]) || 10
+    const weight = Number(ex.weight) || 0
+    return sum + sets * reps * weight
+  }, 0) || 0
+  const completedCount = workoutData.exercises?.filter((ex) => ex.completed).length || 0
+
+  const localObj = {
+    ...workoutData,
+    totalVolume: setsTotal,
+    completedExercises: completedCount,
+    totalExercises: workoutData.exercises?.length || 0,
+    isCompleted: workoutData.isCompleted ?? false,
+  }
+
+  try {
+    localStorage.setItem(`fitchain_workout_${queryDate}`, JSON.stringify(localObj))
+    const history = JSON.parse(localStorage.getItem('fitchain_workout_history') || '[]')
+    const existingIdx = history.findIndex((h) => h.date === queryDate)
+    if (existingIdx >= 0) history[existingIdx] = localObj
+    else history.unshift(localObj)
+    localStorage.setItem('fitchain_workout_history', JSON.stringify(history.slice(0, 30)))
+  } catch {}
+
+  try {
+    const data = await request('/api/workouts', {
+      method: 'POST',
+      body: JSON.stringify(workoutData),
+    })
+    return data.workout || localObj
+  } catch {
+    return localObj
+  }
 }
 
 // ---------- Water ----------
 
 export async function getTodayWater(date) {
   const queryDate = date || getTodayString()
-  const data = await request(`/api/water?date=${queryDate}`)
-  return data.amount || 0
+  try {
+    const data = await request(`/api/water?date=${queryDate}`)
+    return data.amount || 0
+  } catch {
+    try {
+      const val = localStorage.getItem(`fitchain_water_${queryDate}`)
+      return val ? Number(val) : 0
+    } catch {
+      return 0
+    }
+  }
 }
 
 export async function logWater(amount, date) {
   const queryDate = date || getTodayString()
-  const data = await request('/api/water', {
-    method: 'POST',
-    body: JSON.stringify({ amount: Number(amount), date: queryDate }),
-  })
-  return data.amount
+  const num = Number(amount)
+  try {
+    localStorage.setItem(`fitchain_water_${queryDate}`, String(num))
+  } catch {}
+
+  try {
+    const data = await request('/api/water', {
+      method: 'POST',
+      body: JSON.stringify({ amount: num, date: queryDate }),
+    })
+    return data.amount ?? num
+  } catch {
+    return num
+  }
 }
 
 export async function getMonthlyWater() {
-  const data = await request('/api/water/monthly')
-  return data.monthly || []
+  try {
+    const data = await request('/api/water/monthly')
+    return data.monthly || []
+  } catch {
+    return []
+  }
 }
 
 // ---------- Utilities ----------
