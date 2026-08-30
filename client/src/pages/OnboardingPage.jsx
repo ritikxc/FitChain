@@ -77,7 +77,7 @@ export default function OnboardingPage() {
       }
       const updatedUser = await updateProfile(payload)
       setUser(updatedUser)
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       setError(err.message)
     } finally {

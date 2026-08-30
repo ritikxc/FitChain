@@ -65,17 +65,18 @@ export default function ProfilePage() {
     setError('')
     try {
       const payload = {
-        height: Number(form.height) || 0,
-        weight: Number(form.weight) || 0,
-        age: Number(form.age) || 0,
-        calorieGoal: Number(form.calorieGoal) || 0,
-        proteinGoal: Number(form.proteinGoal) || 0,
-        carbsGoal: Number(form.carbsGoal) || 0,
-        fatGoal: Number(form.fatGoal) || 0,
-        waterGoal: Number(form.waterGoal) || 0,
+        height: form.height === '' ? undefined : Number(form.height),
+        weight: form.weight === '' ? undefined : Number(form.weight),
+        age: form.age === '' ? undefined : Number(form.age),
+        calorieGoal: form.calorieGoal === '' ? undefined : Number(form.calorieGoal),
+        proteinGoal: form.proteinGoal === '' ? undefined : Number(form.proteinGoal),
+        carbsGoal: form.carbsGoal === '' ? undefined : Number(form.carbsGoal),
+        fatGoal: form.fatGoal === '' ? undefined : Number(form.fatGoal),
+        waterGoal: form.waterGoal === '' ? undefined : Number(form.waterGoal),
         fitnessGoal: form.fitnessGoal || profile.fitnessGoal,
         activityLevel: form.activityLevel || profile.activityLevel,
         gender: form.gender || profile.gender,
+        profileCompleted: true,
         setupComplete: true,
       }
       const updatedUser = await updateProfile(payload)

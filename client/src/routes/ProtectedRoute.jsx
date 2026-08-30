@@ -12,10 +12,15 @@ export default function ProtectedRoute({ children }) {
     let active = true
     if (!token) return
 
+    const stored = getStoredUser()
+    if (stored) {
+      setUser(stored)
+    }
+
     getCurrentUser()
       .then((freshUser) => {
         if (active) {
-          setUser(freshUser)
+          if (freshUser) setUser(freshUser)
           setHydrated(true)
         }
       })
@@ -29,15 +34,21 @@ export default function ProtectedRoute({ children }) {
     return () => {
       active = false
     }
-  }, [token])
+  }, [token, location.pathname])
 
   if (!token) return <Navigate to="/login" replace />
-  if (!hydrated) return null
-  if (!user) return <Navigate to="/login" replace />
 
-  const completed = user?.profile?.profileCompleted ?? user?.profile?.setupComplete ?? false
+  const currentUser = getStoredUser() || user
+  if (!currentUser && hydrated) return <Navigate to="/login" replace />
+  if (!currentUser && !hydrated) return null
+
+  const completed = currentUser?.profile?.profileCompleted ?? currentUser?.profile?.setupComplete ?? false
   if (!completed && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />
+  }
+
+  if (completed && location.pathname === '/onboarding') {
+    return <Navigate to="/dashboard" replace />
   }
 
   return children
