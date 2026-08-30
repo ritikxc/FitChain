@@ -131,6 +131,54 @@ export async function getWeeklyData() {
   return data.weekly
 }
 
+// ---------- Workouts ----------
+
+export async function getTodayWorkout(date) {
+  const queryDate = date || getTodayString()
+  const data = await request(`/api/workouts/today?date=${queryDate}`)
+  return data.workout
+}
+
+export async function getWorkoutHistory() {
+  const data = await request('/api/workouts/history')
+  return data.workouts || []
+}
+
+export async function getMonthlyWorkouts() {
+  const data = await request('/api/workouts/monthly')
+  return data
+}
+
+export async function logWorkout(workoutData) {
+  const data = await request('/api/workouts', {
+    method: 'POST',
+    body: JSON.stringify(workoutData),
+  })
+  return data.workout
+}
+
+// ---------- Water ----------
+
+export async function getTodayWater(date) {
+  const queryDate = date || getTodayString()
+  const data = await request(`/api/water?date=${queryDate}`)
+  return data.amount || 0
+}
+
+export async function logWater(amount, date) {
+  const queryDate = date || getTodayString()
+  const data = await request('/api/water', {
+    method: 'POST',
+    body: JSON.stringify({ amount: Number(amount), date: queryDate }),
+  })
+  return data.amount
+}
+
+export async function getMonthlyWater() {
+  const data = await request('/api/water/monthly')
+  return data.monthly || []
+}
+
 // ---------- Utilities ----------
 
 export function getTodayString() {

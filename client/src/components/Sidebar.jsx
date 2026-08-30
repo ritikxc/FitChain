@@ -6,9 +6,8 @@ import { logout, getStoredUser } from '../services/api'
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Workouts', path: '/workouts', icon: Dumbbell },
-  { label: 'Progress', path: '/progress', icon: TrendingUp },
   { label: 'Nutrition', path: '/nutrition', icon: Utensils },
-  { label: 'Analytics', path: '/analytics', icon: Activity },
+  { label: 'Progress', path: '/progress', icon: TrendingUp },
   { label: 'Profile', path: '/profile', icon: UserCircle2 },
   { label: 'Settings', path: '/settings', icon: Settings2 },
 ]

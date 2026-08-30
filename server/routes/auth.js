@@ -125,6 +125,10 @@ router.patch(
     body('setupComplete').optional().isBoolean().withMessage('Setup completion must be true or false'),
     body('fitnessGoal').optional().isIn(['weight_loss', 'maintain', 'weight_gain', 'muscle_gain']).withMessage('Invalid fitness goal'),
     body('activityLevel').optional().isIn(['sedentary', 'lightly_active', 'moderately_active', 'very_active']).withMessage('Invalid activity level'),
+    body('workoutSplit').optional().isString().withMessage('Invalid split'),
+    body('unitSystem').optional().isIn(['metric', 'imperial']).withMessage('Invalid unit system'),
+    body('darkMode').optional().isBoolean().withMessage('Dark mode must be true or false'),
+    body('weight').optional().isFloat({ min: 30, max: 300 }).withMessage('Weight must be between 30 and 300kg'),
   ],
   async (req, res, next) => {
     try {
@@ -133,7 +137,27 @@ router.patch(
         return res.status(400).json({ success: false, message: errors.array()[0].msg })
       }
 
-      const { goal, location, calorieGoal, height, weight, age, gender, fitnessGoal, proteinGoal, carbsGoal, fatGoal, waterGoal, activityLevel, setupComplete, profileCompleted } = req.body
+      const {
+        goal,
+        location,
+        calorieGoal,
+        height,
+        weight,
+        age,
+        gender,
+        fitnessGoal,
+        proteinGoal,
+        carbsGoal,
+        fatGoal,
+        waterGoal,
+        activityLevel,
+        setupComplete,
+        profileCompleted,
+        workoutSplit,
+        unitSystem,
+        darkMode,
+      } = req.body
+
       const update = {}
 
       if (goal !== undefined) update['profile.goal'] = goal
@@ -149,6 +173,9 @@ router.patch(
       if (fatGoal !== undefined) update['profile.fatGoal'] = fatGoal
       if (waterGoal !== undefined) update['profile.waterGoal'] = waterGoal
       if (activityLevel !== undefined) update['profile.activityLevel'] = activityLevel
+      if (workoutSplit !== undefined) update['profile.workoutSplit'] = workoutSplit
+      if (unitSystem !== undefined) update['profile.unitSystem'] = unitSystem
+      if (darkMode !== undefined) update['profile.darkMode'] = darkMode
 
       const completedValue = profileCompleted ?? setupComplete
       if (completedValue !== undefined) {
@@ -156,9 +183,21 @@ router.patch(
         update['profile.setupComplete'] = completedValue
       }
 
+      // If weight was provided, also record entry in weightHistory
+      const mongoUpdate = { $set: update }
+      if (weight !== undefined) {
+        const todayStr = new Date().toISOString().split('T')[0]
+        mongoUpdate.$push = {
+          'profile.weightHistory': {
+            date: todayStr,
+            weight: Number(weight),
+          },
+        }
+      }
+
       const user = await User.findByIdAndUpdate(
         req.user._id,
-        { $set: update },
+        mongoUpdate,
         { new: true, runValidators: true }
       )
 

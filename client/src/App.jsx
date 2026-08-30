@@ -7,7 +7,6 @@ import DashboardPage from './pages/DashboardPage'
 import WorkoutsPage from './pages/WorkoutsPage'
 import ProgressPage from './pages/ProgressPage'
 import NutritionPage from './pages/NutritionPage'
-import AnalyticsPage from './pages/AnalyticsPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
 import ProtectedRoute from './routes/ProtectedRoute'
@@ -47,14 +46,6 @@ export default function App() {
           }
         />
         <Route
-          path="/progress"
-          element={
-            <ProtectedRoute>
-              <ProgressPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/nutrition"
           element={
             <ProtectedRoute>
@@ -63,12 +54,16 @@ export default function App() {
           }
         />
         <Route
-          path="/analytics"
+          path="/progress"
           element={
             <ProtectedRoute>
-              <AnalyticsPage />
+              <ProgressPage />
             </ProtectedRoute>
           }
+        />
+        <Route
+          path="/analytics"
+          element={<Navigate to="/progress" replace />}
         />
         <Route
           path="/profile"

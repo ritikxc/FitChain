@@ -65,42 +65,27 @@ export default function NutritionPage() {
         <div className="p-4 md:p-6 space-y-5">
           {error && <div className="rounded-2xl border border-[#f1c4c4] bg-[#fff7f7] p-3 text-sm text-[#b91c1c]">{error}</div>}
 
-          <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-5">
-            <div className="rounded-[28px] border border-[#e5e5e5] bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <p className="section-title mb-2">Today</p>
-                  <h2 className="text-2xl font-semibold">Your nutrition overview</h2>
-                </div>
-                <div className="pill"><Sparkles className="h-3.5 w-3.5" /> Balanced</div>
+          <section className="rounded-[28px] border border-[#e5e5e5] bg-white p-5 md:p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="section-title mb-2">Today</p>
+                <h2 className="text-2xl font-semibold">Your nutrition overview</h2>
               </div>
-              <div className="grid sm:grid-cols-3 gap-3">
-                <div className="rounded-2xl bg-[#f7f7f7] p-4">
-                  <p className="text-sm text-[#666666]">Calories</p>
-                  <p className="text-xl font-semibold mt-1">{macros.calories}</p>
-                </div>
-                <div className="rounded-2xl bg-[#f7f7f7] p-4">
-                  <p className="text-sm text-[#666666]">Protein</p>
-                  <p className="text-xl font-semibold mt-1">{macros.protein}g</p>
-                </div>
-                <div className="rounded-2xl bg-[#f7f7f7] p-4">
-                  <p className="text-sm text-[#666666]">Carbs</p>
-                  <p className="text-xl font-semibold mt-1">{macros.carbs}g</p>
-                </div>
-              </div>
+              <div className="pill"><Sparkles className="h-3.5 w-3.5" /> Balanced</div>
             </div>
-
-            <div className="rounded-[28px] border border-[#e5e5e5] bg-[#f7f7f7] p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <Search className="h-4 w-4" />
-                <p className="font-semibold">Search food</p>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="rounded-2xl bg-[#f7f7f7] p-4">
+                <p className="text-sm text-[#666666]">Calories</p>
+                <p className="text-2xl font-semibold mt-1">{macros.calories.toLocaleString()} <span className="text-sm text-[#888888]">kcal</span></p>
               </div>
-              <div className="relative">
-                <input className="input-field" placeholder="Eggs, oats, salmon..." />
+              <div className="rounded-2xl bg-[#f7f7f7] p-4">
+                <p className="text-sm text-[#666666]">Protein</p>
+                <p className="text-2xl font-semibold mt-1 text-[#2563eb]">{macros.protein}g</p>
               </div>
-              <button className="button-primary w-full mt-4">
-                Quick add <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="rounded-2xl bg-[#f7f7f7] p-4">
+                <p className="text-sm text-[#666666]">Carbs</p>
+                <p className="text-2xl font-semibold mt-1 text-[#16a34a]">{macros.carbs}g</p>
+              </div>
             </div>
           </section>
 

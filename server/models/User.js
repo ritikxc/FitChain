@@ -105,6 +105,25 @@ const userSchema = new mongoose.Schema(
         type: Boolean,
         default: false,
       },
+      workoutSplit: {
+        type: String,
+        default: 'ppl',
+      },
+      unitSystem: {
+        type: String,
+        enum: ['metric', 'imperial'],
+        default: 'metric',
+      },
+      darkMode: {
+        type: Boolean,
+        default: false,
+      },
+      weightHistory: [
+        {
+          date: { type: String, required: true },
+          weight: { type: Number, required: true },
+        },
+      ],
     },
   },
   {

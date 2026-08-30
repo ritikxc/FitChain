@@ -40,6 +40,8 @@ app.use('/api', globalLimiter)
 // --- Routes ---
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/meals', require('./routes/meals'))
+app.use('/api/workouts', require('./routes/workouts'))
+app.use('/api/water', require('./routes/water'))
 
 // Health check
 app.get('/api/health', (req, res) => {
