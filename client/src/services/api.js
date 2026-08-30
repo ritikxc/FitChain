@@ -92,9 +92,13 @@ export async function getCurrentUser() {
     const data = await request('/api/auth/me')
     setStoredUser(data.user)
     return data.user
-  } catch {
-    removeToken()
-    return null
+  } catch (err) {
+    if (err.message && (err.message.includes('authorized') || err.message.includes('expired') || err.message.includes('jwt') || err.message.includes('token'))) {
+      removeToken()
+      return null
+    }
+    // Return cached user on network / cold start errors so user is not logged out or blocked
+    return cached
   }
 }
 

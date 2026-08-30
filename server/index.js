@@ -11,12 +11,35 @@ connectDB()
 
 const app = express()
 
+// Trust proxy for Render / Vercel reverse proxy headers
+app.set('trust proxy', 1)
+
 // --- Global Middleware ---
 
-// CORS — allow requests from the React dev server
+// CORS — allow requests from local dev, Vercel deployments, and configured origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  ...(process.env.CLIENT_ORIGIN ? process.env.CLIENT_ORIGIN.split(',').map(s => s.trim()) : []),
+]
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, health checks)
+    if (!origin) return callback(null, true)
+    if (
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin) ||
+      /\.onrender\.com$/.test(origin)
+    ) {
+      return callback(null, true)
+    }
+    return callback(null, true)
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 
 // Parse JSON bodies
