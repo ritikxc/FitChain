@@ -81,6 +81,7 @@ export async function login({ email, password }) {
 }
 
 export function logout() {
+  localStorage.removeItem('fitchain_onboarded')
   removeToken()
 }
 
@@ -107,8 +108,21 @@ export async function updateProfile(profileData = {}) {
     method: 'PATCH',
     body: JSON.stringify(profileData),
   })
-  setStoredUser(data.user)
-  return data.user
+  const prevUser = getStoredUser() || {}
+  const mergedUser = {
+    ...prevUser,
+    ...(data.user || {}),
+    profile: {
+      ...(prevUser.profile || {}),
+      ...(data.user?.profile || {}),
+      ...profileData,
+    },
+  }
+  setStoredUser(mergedUser)
+  if (profileData.profileCompleted || profileData.setupComplete) {
+    localStorage.setItem('fitchain_onboarded', 'true')
+  }
+  return mergedUser
 }
 
 // ---------- Meals ----------

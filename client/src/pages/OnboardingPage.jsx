@@ -75,6 +75,7 @@ export default function OnboardingPage() {
         profileCompleted: true,
         setupComplete: true,
       }
+      localStorage.setItem('fitchain_onboarded', 'true')
       const updatedUser = await updateProfile(payload)
       setUser(updatedUser)
       navigate('/dashboard', { replace: true })

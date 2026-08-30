@@ -42,7 +42,8 @@ export default function ProtectedRoute({ children }) {
   if (!currentUser && hydrated) return <Navigate to="/login" replace />
   if (!currentUser && !hydrated) return null
 
-  const completed = currentUser?.profile?.profileCompleted ?? currentUser?.profile?.setupComplete ?? false
+  const isExplicitOnboarded = typeof window !== 'undefined' && localStorage.getItem('fitchain_onboarded') === 'true'
+  const completed = Boolean(currentUser?.profile?.profileCompleted || currentUser?.profile?.setupComplete || isExplicitOnboarded)
   if (!completed && location.pathname !== '/onboarding') {
     return <Navigate to="/onboarding" replace />
   }
