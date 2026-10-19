@@ -1,205 +1,41 @@
-# FitChain — Full-Stack Fitness Tracking App
+# FitChain — Full-Stack Fitness Tracking Application
 
-A professional full-stack fitness tracking application built with React (frontend) and Node.js + Express + MongoDB (backend). JWT authentication, real database persistence, and a polished dark SaaS UI.
+**Live:** [https://fit-chain-v2.vercel.app/](https://fit-chain-v2.vercel.app/)
 
----
+FitChain is a full-stack fitness and nutrition tracking web application that helps users manage their daily diet, monitor calorie intake, track hydration, and follow structured workout routines. It provides a personalized dashboard where users can manage their fitness goals and visualize their progress through an intuitive, modern interface.
 
-## 🏗 Project Structure
+## Key Features
 
-```
-fitchain/
-├── server/                    ← Node.js + Express backend
-│   ├── config/
-│   │   └── db.js              MongoDB Atlas connection
-│   ├── middleware/
-│   │   ├── auth.js            JWT protect middleware + signToken helper
-│   │   └── errorHandler.js    Central error handler
-│   ├── models/
-│   │   ├── User.js            User schema (bcrypt hashing, profile)
-│   │   └── Meal.js            Meal schema with compound index
-│   ├── routes/
-│   │   ├── auth.js            POST /signup, POST /login, GET /me, PATCH /profile
-│   │   └── meals.js           GET /, GET /weekly, POST /, DELETE /:id
-│   ├── .env.example           ← Copy to .env and fill in values
-│   ├── index.js               Express app entry point
-│   └── package.json
-│
-├── client/                    ← React + Vite frontend
-│   ├── src/
-│   │   ├── components/        Navbar, Sidebar, AddMealForm, MealList, MacroChart, WeeklyChart
-│   │   ├── pages/             Landing, Login, Signup, Dashboard, Workouts, Progress
-│   │   ├── services/
-│   │   │   └── api.js         ← All API calls (replaces localStorage)
-│   │   ├── data/
-│   │   │   └── workouts.js    Static workout plan data
-│   │   ├── routes/
-│   │   │   └── ProtectedRoute.jsx
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── .env.example           ← Copy to .env
-│   └── package.json
-│
-├── package.json               Root — runs both with concurrently
-└── README.md
-```
+- **User Authentication:** Provides signup and login functionality, allowing users to access their personalized fitness profiles and data.
 
----
+- **Personalized Fitness Onboarding:** Allows users to enter their height, weight, fitness goals, preferred daily calorie intake, and macronutrient targets to personalize their fitness experience.
 
-## 🚀 Setup Guide
+- **Daily Meal & Calorie Tracking:** Enables users to record meals, monitor their daily calorie consumption, and compare their intake against their nutrition goals.
 
-### Step 1 — MongoDB Atlas
+- **Macronutrient Tracking:** Tracks protein, carbohydrates, and fat intake to help users understand their nutritional balance and make informed dietary decisions.
 
-1. Go to [mongodb.com/atlas](https://mongodb.com/atlas) and create a free account
-2. Create a **free M0 cluster** (takes ~3 minutes)
-3. Under **Database Access**, create a user with a username and password
-4. Under **Network Access**, click **Add IP Address → Allow Access from Anywhere** (for development)
-5. Click **Connect → Connect your application** and copy the connection string
-   - It looks like: `mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/`
+- **Personalized Dashboard:** Displays key fitness statistics, daily nutrition summaries, calorie progress, water intake, and weekly progress in one place.
 
-### Step 2 — Configure the Server
+- **Workout Planning:** Provides structured workout routines for home and gym training, with plans focused on muscle hypertrophy, strength development, and endurance.
 
-```bash
-cd server
-cp .env.example .env
-```
+- **Fitness Progress Visualization:** Uses interactive charts to present weekly nutrition and fitness data, making it easier to understand progress and identify patterns over time.
 
-Edit `.env` and fill in:
-```env
-MONGODB_URI=mongodb+srv://your_user:your_password@cluster0.xxxxx.mongodb.net/fitchain?retryWrites=true&w=majority
-JWT_SECRET=generate_a_long_random_string_here
-JWT_EXPIRES_IN=7d
-PORT=5000
-CLIENT_ORIGIN=http://localhost:5173
-NODE_ENV=development
-```
+- **Water Intake Tracking:** Helps users monitor their daily hydration by recording water consumption throughout the day.
 
-To generate a secure JWT_SECRET, run:
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-```
+- **Meal Management:** Supports adding, viewing, and deleting meal entries, making it easier to maintain an organized daily food log.
 
-### Step 3 — Configure the Client
+- **Modern User Interface:** Features a clean, dark-themed dashboard with organized navigation, interactive charts, and responsive layouts for a smooth user experience.
 
-```bash
-cd client
-cp .env.example .env
-```
+## Technology Stack
 
-The default `.env` already points to `http://localhost:5000/api` — no changes needed for local dev.
+- **Frontend:** React.js, Tailwind CSS, React Router DOM
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB with Mongoose
+- **Authentication:** JSON Web Tokens (JWT) and bcrypt password hashing
+- **API Communication:** REST APIs
+- **Data Visualization:** Recharts
+- **Development Tools:** Vite
 
-### Step 4 — Install Dependencies
+## Project Objective
 
-From the **root** directory:
-```bash
-npm run install:all
-```
-
-This installs root deps (concurrently), server deps, and client deps in one go.
-
-Or manually:
-```bash
-npm install          # root
-cd server && npm install
-cd ../client && npm install
-```
-
-### Step 5 — Run the App
-
-From the **root** directory:
-```bash
-npm run dev
-```
-
-This starts both servers simultaneously:
-- **Backend** → http://localhost:5000
-- **Frontend** → http://localhost:5173
-
-Open your browser to **http://localhost:5173** 🎉
-
----
-
-## 🔌 API Endpoints
-
-All API routes are prefixed with `/api`
-
-### Auth
-| Method | Endpoint | Auth Required | Description |
-|--------|----------|---------------|-------------|
-| POST | `/auth/signup` | No | Create account, returns JWT |
-| POST | `/auth/login` | No | Login, returns JWT |
-| GET | `/auth/me` | ✅ Yes | Get current user from token |
-| PATCH | `/auth/profile` | ✅ Yes | Update goal, location, calorieGoal |
-
-### Meals
-| Method | Endpoint | Auth Required | Description |
-|--------|----------|---------------|-------------|
-| GET | `/meals?date=YYYY-MM-DD` | ✅ Yes | Get meals for a specific date |
-| GET | `/meals/weekly` | ✅ Yes | Get 7-day aggregated nutrition data |
-| POST | `/meals` | ✅ Yes | Add a new meal |
-| DELETE | `/meals/:id` | ✅ Yes | Delete a meal (owner only) |
-
-### Health Check
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Check server status |
-
----
-
-## 🔐 How Authentication Works
-
-1. User signs up → password is **bcrypt hashed** (12 salt rounds) before storing in MongoDB
-2. Server returns a **JWT token** signed with your `JWT_SECRET`
-3. Client stores the token in **localStorage** (`fitchain_token`)
-4. Every protected API request sends `Authorization: Bearer <token>` header
-5. Server's `protect` middleware verifies the JWT and fetches the user from DB
-6. Token expires after 7 days (configurable via `JWT_EXPIRES_IN`)
-
----
-
-## 🛠 Tech Stack
-
-### Backend
-| Package | Purpose |
-|---------|---------|
-| Express | Web framework |
-| Mongoose | MongoDB ODM |
-| bcryptjs | Password hashing |
-| jsonwebtoken | JWT signing & verification |
-| express-validator | Request validation |
-| express-rate-limit | Brute force protection |
-| morgan | HTTP request logging |
-| dotenv | Environment variables |
-| cors | Cross-origin requests |
-
-### Frontend
-| Package | Purpose |
-|---------|---------|
-| React 18 | UI framework |
-| React Router DOM v6 | Client-side routing |
-| Tailwind CSS v3 | Utility-first styling |
-| Recharts | Charts & data visualization |
-| Vite | Build tool & dev server |
-
----
-
-## 🚢 Production Deployment
-
-### Backend (Railway / Render / Fly.io)
-1. Push to GitHub
-2. Connect to Railway/Render
-3. Set environment variables (same as `.env`)
-4. Deploy — these platforms detect Node.js automatically
-
-### Frontend (Vercel / Netlify)
-1. Set `VITE_API_URL` to your deployed backend URL (e.g. `https://fitchain-api.railway.app/api`)
-2. Build command: `npm run build`
-3. Output directory: `dist`
-
----
-
-## 📝 Notes
-
-- Passwords are **never** stored in plain text — bcrypt hashes them with 12 rounds
-- The `password` field has `select: false` in the Mongoose schema — it's never returned in API responses
-- Rate limiting is applied to auth routes (10 requests per 15 min) to prevent brute force
-- MongoDB compound index on `{ user, date }` ensures fast meal queries
+The goal of FitChain is to bring essential fitness management features into a single application, eliminating the need to track nutrition, workouts, hydration, and progress across separate tools. It combines personalized fitness data, meal management, workout planning, and progress visualization into one convenient platform.
